@@ -25,13 +25,10 @@ app.add_middleware(
 async def root():
     return {"message": "IA KSG"}
 
-class StockSymbolInput(BaseModel):
-    stock_symbol: str
 
-
-@app.post("/runAi")
-async def run_ai(input_data: StockSymbolInput):
-    stock_symbol = input_data.stock_symbol
+@app.get("/runAi/{stock_symbol}")
+async def run_ai(stock_symbol):
+    stock_symbol = stock_symbol
     action_1, fiability_1, position_1 = ai.run_simulation(
         stock_symbol, "./ai_script/model_1.pth"
     )
@@ -51,8 +48,8 @@ async def run_ai(input_data: StockSymbolInput):
     return {"result": result, "stock_symbol": stock_symbol}
 
 
-@app.post("/getChart")
-async def get_chart(input_data: StockSymbolInput):
+@app.get("/getChart/{stock_symbol}")
+async def get_chart(stock_symbol):
     # Définir la date de fin comme la date actuelle
     end_date = datetime.datetime.now().date()
 
@@ -64,7 +61,7 @@ async def get_chart(input_data: StockSymbolInput):
 
     # Obtenir les données de Yahoo Finance
     _, stock_data = ai.fetch_data(
-        input_data.stock_symbol,
+        stock_symbol,
         start_date=start_date,
         end_date=end_date,
         interval=interval,
