@@ -27,7 +27,7 @@ async def root():
 
 
 @app.get("/runAi/{stock_symbol}")
-async def run_ai(stock_symbol):
+async def run_ai(stock_symbol: str):
     stock_symbol = stock_symbol
     action_1, fiability_1, position_1 = ai.run_simulation(
         stock_symbol, "./ai_script/model_1.pth"
@@ -49,7 +49,7 @@ async def run_ai(stock_symbol):
 
 
 @app.get("/getChart/{stock_symbol}")
-async def get_chart(stock_symbol):
+async def get_chart(stock_symbol: str):
     # Définir la date de fin comme la date actuelle
     end_date = datetime.datetime.now().date()
 
