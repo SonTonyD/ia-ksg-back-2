@@ -10,7 +10,7 @@ import ai_script.ai as ai
 
 app = FastAPI()
 
-origins = ["https://front-ksg.vercel.app"]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
