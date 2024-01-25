@@ -10,6 +10,16 @@ import ai_script.ai as ai
 
 app = FastAPI()
 
+origins = ["https://front-ksg.vercel.app"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=[""],
+    allow_headers=[""],
+)
+
 
 @app.get("/")
 async def root():
