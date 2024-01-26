@@ -3,20 +3,9 @@ import sys
 parent_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(parent_dir)
 
-import argparse
-
 import yfinance as yf
-import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
-from keras.models import Sequential
-from keras.models import load_model
-from keras.layers import Dense, LSTM
 import numpy as np
-import matplotlib.pyplot as plt
-import uuid
-import torch
-import torch.nn as nn
-import torch.optim as optim
 import random
 import ai_script.agent as agt
 
