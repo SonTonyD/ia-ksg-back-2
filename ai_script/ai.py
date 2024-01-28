@@ -55,6 +55,8 @@ def run_simulation(stock_symbol, model_path):
     else:
         action = "hold"
 
+    
+
     fiability = random.randint(0, 100)
     position = "short"
     return action, fiability, position
@@ -121,8 +123,8 @@ def calculate_rsi(data, period=14):
     return rsi
 
 def trading_bot(stock_symbol):
-    end_date = datetime.datetime.now().date()
-    #end_date = datetime.datetime(2024, 1, 19)
+    #end_date = datetime.datetime.now().date()
+    end_date = datetime.datetime(2023, 6, 6)
     start_date = end_date - datetime.timedelta(days=60)
     interval = "1d"
     
@@ -133,7 +135,7 @@ def trading_bot(stock_symbol):
         interval=interval,
     )
 
-    close_data = stock_data["Close"].tail(14).tolist()
+    close_data = stock_data["Close"].tail(15).tolist()
     rsi = calculate_rsi(close_data)
     # Décider de l'action à prendre
     action = ""
@@ -156,5 +158,5 @@ def trading_bot(stock_symbol):
     return action, fiabilite, position
 
 
-# action, _ , _ = trading_bot("AI.PA")
-# print(action)
+action, _ , _ = trading_bot("ALO.PA")
+print(action)

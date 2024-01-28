@@ -35,8 +35,8 @@ async def root():
 @app.get("/runAi/{stock_symbol}")
 async def run_ai(stock_symbol: str):
     stock_symbol = stock_symbol
-    action_1, fiability_1, position_1 = ai.run_simulation(
-        stock_symbol, "./ai_script/model_1.pth"
+    action_1, fiability_1, position_1 = ai.run_prediction_LSTM(
+        stock_symbol, "./ai_script/lstm_v3.h5"
     )
     action_2, fiability_2, position_2 = ai.run_prediction_LSTM(
         stock_symbol, "./ai_script/lstm_v2.h5"
