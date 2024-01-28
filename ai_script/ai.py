@@ -37,8 +37,7 @@ def run_simulation(stock_symbol, model_path):
     # Calculer la date de début (6 mois en arrière à partir de la date actuelle)
     start_date = end_date - datetime.timedelta(days=180)
 
-    data, full_data = fetch_data(stock_symbol, start_date=start_date, end_date=end_date)
-    full_data = full_data.reset_index(drop=True)
+    data, _ = fetch_data(stock_symbol, start_date=start_date, end_date=end_date)
 
     data = scaler.fit_transform(data)
     diffs = np.vstack(([0], np.diff(data, axis=0)))

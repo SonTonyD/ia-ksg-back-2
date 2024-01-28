@@ -3,10 +3,12 @@ from typing import Optional
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
 import datetime
 import yfinance as yf
 
 import ai_script.ai as ai
+import generate_backtest_chart as gbc
 
 app = FastAPI()
 
@@ -19,6 +21,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+images = {
+    
+}
 
 
 @app.get("/")
@@ -56,7 +62,7 @@ async def get_chart(stock_symbol: str):
     # Calculer la date de début (6 mois en arrière à partir de la date actuelle)
     start_date = end_date - datetime.timedelta(days=180)
 
-    # Définir l'intervalle de temps (1 semaine)
+    # Définir l'intervalle de temps (1 jour)
     interval = "1wk"
 
     # Obtenir les données de Yahoo Finance
@@ -68,3 +74,8 @@ async def get_chart(stock_symbol: str):
     )
 
     return {"data": stock_data["Close"]}
+
+@app.get("/plot/{ia_index}/{stock_symbol}")
+async def get_plot(ia_index: str, stock_symbol: str):
+    gbc.generate_backtest_chart(stock_symbol, ia_index, images)
+    return FileResponse("./backtest_images/plot"+ia_index+"_"+stock_symbol+".png")
