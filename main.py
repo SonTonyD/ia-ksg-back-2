@@ -41,8 +41,8 @@ async def run_ai(stock_symbol: str):
     action_2, fiability_2, position_2 = ai.run_prediction_LSTM(
         stock_symbol, "./ai_script/lstm_v2.h5"
     )
-    action_3, fiability_3, position_3 = ai.run_simulation(
-        stock_symbol, "./ai_script/model_3.pth"
+    action_3, fiability_3, position_3 = ai.trading_bot(
+        stock_symbol
     )
 
     result = {

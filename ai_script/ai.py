@@ -32,7 +32,8 @@ def run_simulation(stock_symbol, model_path):
     stock_symbol = stock_symbol
     scaler = MinMaxScaler()
     # Définir la date de fin comme la date actuelle
-    end_date = datetime.datetime.now().date()
+    end_date = datetime.datetime(2024, 1, 19)
+    #end_date = datetime.datetime.now().date()
 
     # Calculer la date de début (6 mois en arrière à partir de la date actuelle)
     start_date = end_date - datetime.timedelta(days=180)
@@ -61,8 +62,8 @@ def run_simulation(stock_symbol, model_path):
 
 def run_prediction_LSTM(stock_symbol, model_path):
     model = load_model(model_path)
-
     end_date = datetime.datetime.now().date()
+    #end_date = datetime.datetime(2024, 1, 19)
     start_date = end_date - datetime.timedelta(days=60)
     interval = "1d"
     
@@ -86,12 +87,74 @@ def run_prediction_LSTM(stock_symbol, model_path):
     predicted_action = predicted_class.item()
 
     if predicted_action == 0:
-        action = "buy"
-    elif predicted_action == 1:
         action = "sell"
+    elif predicted_action == 1:
+        action = "buy"
     else:
         action = "hold"
 
     fiability = int(reliability * 100)
     position = "short"
     return action, fiability, position
+
+
+#########Trading Bot####################
+
+def calculate_rsi(data, period=14):
+    # Calculer les variations entre les prix de clôture successifs
+    price_diff = [data[i] - data[i-1] for i in range(1, len(data))]
+    
+    # Séparer les variations positives et négatives
+    gains = [diff if diff > 0 else 0 for diff in price_diff]
+    losses = [-diff if diff < 0 else 0 for diff in price_diff]
+    
+    # Calculer les moyennes mobiles sur la période spécifiée
+    avg_gain = sum(gains[:period]) / period
+    avg_loss = sum(losses[:period]) / period
+    
+    rs = avg_gain / avg_loss if avg_loss != 0 else 0
+    
+    # Calculer le RSI
+    rsi = 100 - (100 / (1 + rs))
+    print(rsi)
+    
+    return rsi
+
+def trading_bot(stock_symbol):
+    end_date = datetime.datetime.now().date()
+    #end_date = datetime.datetime(2024, 1, 19)
+    start_date = end_date - datetime.timedelta(days=60)
+    interval = "1d"
+    
+    _, stock_data = fetch_data(
+        stock_symbol,
+        start_date=start_date,
+        end_date=end_date,
+        interval=interval,
+    )
+
+    close_data = stock_data["Close"].tail(14).tolist()
+    rsi = calculate_rsi(close_data)
+    # Décider de l'action à prendre
+    action = ""
+    fiabilite = 0
+
+    if rsi < 40:
+        action = "buy"
+        # Fiabilité de 100% si RSI ≤ 35, sinon calculée en fonction de la distance au seuil
+        fiabilite = 100 if rsi <= 35 else min(100, (40 - rsi) * 100 / 5)
+    elif rsi > 60:
+        action = "sell"
+        # Fiabilité de 100% si RSI ≥ 65, sinon calculée en fonction de la distance au seuil
+        fiabilite = 100 if rsi >= 65 else min(100, (rsi - 60) * 100 / 5)
+    else:
+        action = "hold"
+        # Fiabilité basée sur la proximité du RSI à 50
+        fiabilite = 100 - abs(50 - rsi) * 100 / 10
+
+    position = "short"
+    return action, fiabilite, position
+
+
+# action, _ , _ = trading_bot("AI.PA")
+# print(action)
